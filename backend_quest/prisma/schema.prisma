@@ -1,0 +1,46 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+datasource db {
+  provider = "postgresql"
+}
+generator client {
+  provider = "prisma-client"
+  output   = "../src/db/generated"
+}
+
+enum ItemStatus {
+  LOST
+  FOUND
+}
+
+enum PostStatus {
+  OPEN
+  CLOSED
+}
+
+model Users {
+  id        Int          @id @default(autoincrement())
+  username  String       @unique
+  password  String
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @default(now())
+  lostItems PostItems[]
+}
+
+model PostItems {
+  id          Int        @id @default(autoincrement())
+  type        ItemStatus @default(LOST)
+  title       String
+  description String?
+  location    String
+  eventDate   DateTime
+  status      PostStatus @default(OPEN)
+  image       String
+  owner       Int
+  ownerId     Users      @relation(fields: [owner], references: [id], onDelete: Cascade)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @default(now())
+}
