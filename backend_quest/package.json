@@ -2,7 +2,8 @@
   "name": "hono",
   "type": "module",
   "scripts": {
-    "dev": "bun run --hot src/index.ts"
+    "dev": "bun run --hot src/index.ts",
+    "build": "bun build ./src/index.ts --outdir ./dist --target bun"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1101.0",
