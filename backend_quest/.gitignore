@@ -35,3 +35,4 @@ lerna-debug.log*
 /src/generated/prisma
 
 /src/generated/prisma
+.env*.local
