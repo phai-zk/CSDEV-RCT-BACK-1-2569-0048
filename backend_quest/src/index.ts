@@ -28,7 +28,4 @@ app.route("/api/auth", authRoutes);
 app.route("/api/items", itemRoutes);
 app.route("/api/user", userRoutes);
 
-export default {
-  port: 3000,
-  fetch: app.fetch,
-};
+export default app;
