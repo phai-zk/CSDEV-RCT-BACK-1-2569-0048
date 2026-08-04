@@ -4,11 +4,11 @@ import itemRoutes from "./routes/lostItem.route.js";
 import userRoutes from "./routes/user.route.js";
 import { Scalar } from '@scalar/hono-api-reference';
 import yaml from 'yaml';
-import path from "node:path";
-import fs from "node:fs";
+import { join } from "node:path";
+import { readFileSync } from "node:fs";
 
-const filePath = path.join(process.cwd(), 'doc/openapi.yaml');
-const fileContent = fs.readFileSync(filePath, 'utf8');
+const filePath = join(process.cwd(), 'doc/openapi.yaml');
+const fileContent = readFileSync(filePath, 'utf8');
 const parsedYaml = yaml.parse(fileContent);
 
 const app = new Hono();
