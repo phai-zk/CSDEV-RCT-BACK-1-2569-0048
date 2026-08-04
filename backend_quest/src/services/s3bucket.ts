@@ -32,7 +32,7 @@ export const sendToS3Client = async (file: S3UploadParams) => {
   );
 };
 
-export const getURL = async (fileKey: string) => {
+export const getURL = (fileKey: string) => {
   const url = `https://${BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${encodeURIComponent(fileKey)}`;
   return url;
 };

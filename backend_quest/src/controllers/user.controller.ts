@@ -9,7 +9,7 @@ const getPostLists = async (c: any) => {
         }
     });
 
-    return c.json({messages : "Get all users post list success!", posts,}, 200)
+    return c.json({ posts }, 200)
 
   } catch (error) {
     console.error("Error to get post lists:", error);

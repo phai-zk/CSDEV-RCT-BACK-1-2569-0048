@@ -1,9 +1,9 @@
-import { equal } from "node:assert";
 import { prisma } from "../db/db.js";
 import {
   sendToS3Client,
   getFromS3Client,
   deleteFromS3Client,
+  getURL
 } from "../services/s3bucket.js";
 
 const createPost = async (c: any) => {
@@ -62,7 +62,7 @@ const getPosts = async (c: any) => {
       skip: (page - 1) * limit,
       take: limit,
     });
-    return c.json({ posts });
+    return c.json({ posts }, 200);
   } catch (error) {
     console.error("Error fetching posts:", error);
     return c.json({ error: "Internal server error" }, 500);
@@ -89,6 +89,8 @@ const getPostById = async (c: any) => {
       },
     });
 
+    const imageURL = getURL(post.image);
+
     const response = {
       post,
       owner: {
@@ -96,9 +98,10 @@ const getPostById = async (c: any) => {
         createdAt: owner?.createdAt,
         updatedAt: owner?.updatedAt,
       },
+      imageURL: imageURL
     };
 
-    return c.json({ response });
+    return c.json({ ...response }, 200);
   } catch (error) {
     console.error("Error fetching post:", error);
     return c.json({ error: "Internal server error" }, 500);
@@ -130,10 +133,11 @@ const editPosts = async (c: any) => {
       },
       data: {
         ...body,
+        updatedAt: new Date()
       },
     });
 
-    return c.json({ message: "Post updated successfully", post: updatedPost });
+    return c.json({ message: "Post updated successfully", post: updatedPost }, 200);
   } catch (error) {
     console.error("Error updating post:", error);
     return c.json({ error: "Internal server error" }, 500);
@@ -166,7 +170,7 @@ const deletePost = async (c: any) => {
 
     await deleteFromS3Client(post.image);
 
-    return c.json({ message: "Post deleted successfully" });
+    return c.json({ message: "Post deleted successfully" }, 200);
   } catch (error) {
     console.error("Error deleting post:", error);
     return c.json({ error: "Internal server error" }, 500);
