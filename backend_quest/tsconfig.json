@@ -10,8 +10,16 @@
     "types": ["node"],
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx",
-    "rootDir": "./src",
+    "rootDir": "./",
     "outDir": "./dist"
   },
-  "exclude": ["node_modules"]
+  "include": [
+    "src/**/*",
+    "api/**/*",
+    "prisma.config.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }
