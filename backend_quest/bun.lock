@@ -7,7 +7,6 @@
       "dependencies": {
         "@aws-sdk/client-s3": "^3.1101.0",
         "@aws-sdk/s3-request-presigner": "^3.1101.0",
-        "@hono/swagger-ui": "^0.6.1",
         "@prisma/adapter-pg": "^7.9.1",
         "@prisma/client": "^7.9.1",
         "@scalar/hono-api-reference": "^0.11.12",
@@ -125,8 +124,6 @@
     "@esbuild/win32-ia32": ["@esbuild/win32-ia32@0.28.1", "", { "os": "win32", "cpu": "ia32" }, "sha512-zvb/mB2bSCoJOpoCBgYKKpX6YM6mJBlBUVUtVj41DlZJVEB6/0CKlRYxP5wWl1C1ILiCoAU5wZZ4q1P3qeS6Eg=="],
 
     "@esbuild/win32-x64": ["@esbuild/win32-x64@0.28.1", "", { "os": "win32", "cpu": "x64" }, "sha512-bm4Mowrv+GXMlpWX++EcXw/iLyd1o3+bJkC2DkWXYVvgZCqD/bSj9ctZeAMC3cIxgjRVR2Dufaiu4YPxr5gW1A=="],
-
-    "@hono/swagger-ui": ["@hono/swagger-ui@0.6.1", "", { "peerDependencies": { "hono": ">=4.0.0" } }, "sha512-sJTvldu1GPeEPfyeLG7gRj+W4vEuD+JDi+JjJ3TJs/DvMUtBLs0KJO5yokGegWWdy5qrbdnQGekbhgNRmPmYKQ=="],
 
     "@phc/format": ["@phc/format@1.0.0", "", {}, "sha512-m7X9U6BG2+J+R1lSOdCiITLLrxm+cWlNI3HUFA92oLO77ObGNzaKdh8pMLqdZcshtkKuV84olNNXDfMc4FezBQ=="],
 
