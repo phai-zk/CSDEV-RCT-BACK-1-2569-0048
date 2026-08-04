@@ -1,0 +1,583 @@
+const openapi = {
+  openapi: "3.0.3",
+  info: {
+    title: "backend_quest",
+    description: "lost & found item",
+    version: "1.0.0",
+  },
+  servers: [
+    {
+      url: "http://localhost:3000",
+      description: "Development Server",
+    },
+    {
+      url: "https://csdev-rct-back-1-2569-0048.vercel.app",
+      description: "Production Server",
+    },
+  ],
+  paths: {
+    "/api/auth/register": {
+      post: {
+        summary: "Register",
+        description: "create your account.",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                required: ["username", "password"],
+                properties: {
+                  username: { type: "string", example: "somchai" },
+                  password: { type: "string", example: "1234" },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          "201": {
+            description: "Create account successfully",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/UserResponse" },
+              },
+            },
+          },
+          "400": {
+            description: "Invalid",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          "500": {
+            description: "Internal server error",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+        },
+      },
+    },
+
+    "/api/auth/login": {
+      post: {
+        summary: "Login",
+        description: "login your user account.",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                required: ["username", "password"],
+                properties: {
+                  username: { type: "string", example: "somchai" },
+                  password: { type: "string", example: "1234" },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          "200": {
+            description: "Login account successfully",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/UserResponse" },
+              },
+            },
+          },
+          "400": {
+            description: "Invalid",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          "401": {
+            description: "Unauthorization",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          "500": {
+            description: "Internal server error",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+        },
+      },
+    },
+
+    "/api/items": {
+      post: {
+        summary: "Post Item",
+        description: "post an item that you get lost or found.",
+        security: [{ BearerAuth: [] }],
+        requestBody: {
+          required: true,
+          content: {
+            "multipart/form-data": {
+              schema: {
+                type: "object",
+                required: ["file", "title", "description", "location", "eventDate", "type"],
+                properties: {
+                  file: { type: "string", format: "binary" },
+                  title: { type: "string", example: "title" },
+                  description: { type: "string", example: "description" },
+                  location: { type: "string", example: "location" },
+                  eventDate: {
+                    type: "string",
+                    format: "date-time",
+                    example: "2026-08-04T12:00:00Z",
+                  },
+                  type: { type: "string", example: "LOST" },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          "201": {
+            description: "Post lost item successfully",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/PostItemResponse" },
+              },
+            },
+          },
+          "400": {
+            description: "Invalid",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          "500": {
+            description: "Internal server error",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+        },
+      },
+      get: {
+        summary: "Query Post",
+        description: "get a lists of post item.",
+        security: [{ BearerAuth: [] }],
+        parameters: [
+          {
+            name: "type",
+            in: "query",
+            required: false,
+            description: "Use for query by type of post",
+            schema: { type: "string", example: "FOUND" },
+          },
+          {
+            name: "title",
+            in: "query",
+            required: false,
+            description: "Use for query by title of post.",
+            schema: { type: "string", example: "title" },
+          },
+          {
+            name: "page",
+            in: "query",
+            required: false,
+            description: "Use for describe a paging of data.",
+            schema: { type: "integer", example: 1 },
+          },
+          {
+            name: "limit",
+            in: "query",
+            required: false,
+            description: "Use for limit data",
+            schema: { type: "integer", example: 10 },
+          },
+        ],
+        responses: {
+          "200": {
+            description: "Query successfull.",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/PostQueryResponse" },
+              },
+            },
+          },
+          "500": {
+            description: "Internal server error",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+        },
+      },
+    },
+
+    "/api/items/{id}": {
+      get: {
+        summary: "Get Post ById",
+        description: "query a post item by id",
+        security: [{ BearerAuth: [] }],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            description: 'Id of that post do you want"',
+            schema: { type: "integer", example: 1 },
+          },
+        ],
+        responses: {
+          "200": {
+            description: "Found a post by id",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/PostQueryById" },
+              },
+            },
+          },
+          "404": {
+            description: "Not found a post by id",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          "500": {
+            description: "Internal server error",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+        },
+      },
+      patch: {
+        summary: "Edit Post",
+        description: "edit a post by id.",
+        security: [{ BearerAuth: [] }],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            description: 'Id of that post do you want"',
+            schema: { type: "integer", example: 1 },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "multipart/form-data": {
+              schema: {
+                type: "object",
+                properties: {
+                  file: { type: "string", format: "binary" },
+                  title: { type: "string", example: "title" },
+                  description: { type: "string", example: "description" },
+                  location: { type: "string", example: "location" },
+                  eventDate: {
+                    type: "string",
+                    format: "date-time",
+                    example: "2026-08-04T12:00:00Z",
+                  },
+                  type: { type: "string", example: "LOST" },
+                  status: { type: "string", example: "OPEN" },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          "200": {
+            description: "Edit post successfully",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/PostItemResponse" },
+              },
+            },
+          },
+          "403": {
+            description: "User not owner of this post.",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          "404": {
+            description: "Not found a post by id",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          "500": {
+            description: "Internal server error",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+        },
+      },
+      delete: {
+        summary: "Delete Post",
+        description: "delete a post by id.",
+        security: [{ BearerAuth: [] }],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            description: 'Id of that post do you want"',
+            schema: { type: "integer", example: 1 },
+          },
+        ],
+        responses: {
+          "200": {
+            description: "Delete post successfully",
+            content: {
+              "application/json": {
+                schema: {
+                  properties: {
+                    message: {
+                      type: "string",
+                      example: "Post deleted successfully",
+                    },
+                  },
+                },
+              },
+            },
+          },
+          "403": {
+            description: "User not owner of this post.",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          "404": {
+            description: "Not found a post by id",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          "500": {
+            description: "Internal server error",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+        },
+      },
+    },
+
+    "/api/user/@me/items": {
+      get: {
+        summary: "Get User's Post",
+        description: "get all of user's post",
+        security: [{ BearerAuth: [] }],
+        responses: {
+          "200": {
+            description: "get all list successfully",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/PostQueryResponse" },
+              },
+            },
+          },
+          "500": {
+            description: "Internal server error",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+        },
+      },
+    },
+
+    "/api/items/{id}/image": {
+      get: {
+        summary: "Image",
+        description: "get image",
+        security: [{ BearerAuth: [] }],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            description: "Id of that post do you want",
+            schema: { type: "integer", example: 1 },
+          },
+        ],
+        responses: {
+          "200": {
+            description: "Get an image to show successfully",
+            content: {
+              "image/jpeg": { schema: { type: "string", format: "binary" } },
+              "image/png": { schema: { type: "string", format: "binary" } },
+              "image/webp": { schema: { type: "string", format: "binary" } },
+            },
+          },
+          "404": {
+            description: "Not found an image",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          "500": {
+            description: "Internal server error",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+
+  components: {
+    securitySchemes: {
+      BearerAuth: {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
+      },
+    },
+    schemas: {
+      Error: {
+        type: "object",
+        properties: {
+          error: { type: "string", example: "Error message" },
+        },
+      },
+      User: {
+        type: "object",
+        properties: {
+          id: { type: "integer", example: 1 },
+          username: { type: "string", example: "Somchai" },
+          createdAt: {
+            type: "string",
+            format: "date-time",
+            example: "2026-08-04T08:11:49Z",
+          },
+          updatedAt: {
+            type: "string",
+            format: "date-time",
+            example: "2026-08-04T08:11:49Z",
+          },
+        },
+      },
+      UserResponse: {
+        type: "object",
+        properties: {
+          message: { type: "string", example: "User created successfully" },
+          token: { type: "string", example: "token" },
+          user: { $ref: "#/components/schemas/User" },
+        },
+      },
+      PostItem: {
+        type: "object",
+        properties: {
+          id: { type: "integer", example: 1 },
+          type: { type: "string", example: "LOST" },
+          title: { type: "string", example: "title" },
+          description: { type: "string", example: "description" },
+          location: { type: "string", example: "location" },
+          eventDate: {
+            type: "string",
+            format: "date-time",
+            example: "2026-08-04T12:00:00.000Z",
+          },
+          status: { type: "string", example: "OPEN" },
+          image: { type: "string", example: "image.png" },
+          owner: { type: "integer", example: 1 },
+          createdAt: {
+            type: "string",
+            format: "date-time",
+            example: "2026-08-04T12:00:00.000Z",
+          },
+          updatedAt: {
+            type: "string",
+            format: "date-time",
+            example: "2026-08-04T12:00:00.000Z",
+          },
+        },
+      },
+      PostItemResponse: {
+        type: "object",
+        properties: {
+          message: { type: "string", example: "Post created successfully" },
+          post: { $ref: "#/components/schemas/PostItem" },
+        },
+      },
+      PostQueryResponse: {
+        type: "object",
+        properties: {
+          posts: {
+            type: "array",
+            items: { $ref: "#/components/schemas/PostItem" },
+          },
+        },
+      },
+      PostQueryById: {
+        type: "object",
+        properties: {
+          post: { $ref: "#/components/schemas/PostItem" },
+          owner: {
+            type: "object",
+            properties: {
+              username: { type: "string", example: "somchai" },
+              createdAt: {
+                type: "string",
+                format: "date-time",
+                example: "2026-08-04T08:11:49Z",
+              },
+              updatedAt: {
+                type: "string",
+                format: "date-time",
+                example: "2026-08-04T08:11:49Z",
+              },
+            },
+          },
+          imageURL: { type: "string", example: "example.png" },
+        },
+      },
+    },
+  },
+} as const;
+
+export default openapi;

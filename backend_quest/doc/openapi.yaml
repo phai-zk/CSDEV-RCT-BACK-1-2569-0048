@@ -6,7 +6,8 @@ info:
 servers:
   - url: http://localhost:3000
     description: Development Server
-
+  - url: https://csdev-rct-back-1-2569-0048.vercel.app
+    description: Production Server
 paths:
   /api/auth/register:
     post:
