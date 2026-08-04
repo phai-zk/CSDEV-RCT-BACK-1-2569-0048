@@ -23,6 +23,6 @@
     "@types/ws": "^8.18.1",
     "prisma": "^7.9.1",
     "tsx": "^4.23.5",
-    "typescript": "^7.0.2"
+    "typescript": "^5.8.3"
   }
 }
